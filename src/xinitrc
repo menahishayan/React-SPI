@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# exec xterm
+# exec chromium-browser \
+#   --noerrdialogs \
+#   --disable-infobars \
+#   --disable-session-crashed-bubble \
+#   --disable-gpu \
+#   --disable-software-rasterizer \
+#   --kiosk https://nextjs.org
+
+sudo -u pi bash <<EOF
+  source ~/.bashrc
+
+  export NVM_DIR="\$HOME/.nvm"
+  [ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"
+
+  cd ~/Desktop/Projects/MagicMirror
+
+  npm run start
+EOF

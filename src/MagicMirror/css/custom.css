@@ -1,0 +1,56 @@
+/* Custom CSS Sample
+ *
+ * Change color and fonts here.
+ *
+ * Beware that properties cannot be unitless, so for example write '--gap-body: 0px;' instead of just '--gap-body: 0;'
+ */
+
+/* Uncomment and adjust accordingly if you want to import another font from the google-fonts-api: */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap');
+
+:root {
+  --color-text: #fff;
+  --color-text-dimmed: #fff;
+  --color-text-bright: #fff;
+  --color-background: #000;
+  --font-primary: "Inter";
+  --font-secondary: "Inter";
+  --font-size: 20px;
+  --font-size-xsmall: 0.75rem;
+  --font-size-small: 1rem;
+  --font-size-medium: 1.5rem;
+  --font-size-large: 3.25rem;
+  --font-size-xlarge: 3.75rem;
+  --gap-body-top: 10px;
+  --gap-body-right: 10px;
+  --gap-body-bottom: 10px;
+  --gap-body-left: 10px;
+  --gap-modules: 5px;
+}
+
+.module.weather * {
+  --font-size-large: 2rem;
+  line-height: 1;
+}
+
+.module.clock * {
+  --font-size-large: 4.5rem;
+  --font-size-medium: 1.75rem;
+}
+
+.module.MMM-MBTA * {
+  --font-size-xsmall: 1rem;
+  --font-size-small: 1.25rem;
+}
+
+.module.calendar * {
+  --font-size-small: 1.25rem;
+}
+
+.module.calendar td.title.bright {
+  text-align: left;
+  max-width: 25vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

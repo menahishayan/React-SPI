@@ -1,0 +1,14 @@
+[Unit]
+Description=Start Chromium Kiosk on ILI9341 with Logging and Splash Fallback
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+StandardOutput=journal
+StandardError=journal
+ExecStart=/usr/local/bin/kiosk-launch.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
