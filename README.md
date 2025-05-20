@@ -139,9 +139,16 @@ sudo -u pi bash <<EOF
   export NVM_DIR="\$HOME/.nvm"
   [ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"
 
-  cd ~/Desktop/Projects/MagicMirror
-
+  cd ~/<project-directory>
   npm run start
+
+  exec chromium-browser \
+  --noerrdialogs \
+  --disable-infobars \
+  --disable-session-crashed-bubble \
+  --disable-gpu \
+  --disable-software-rasterizer \
+  --kiosk https://localhost:3000
 EOF
 ```
 
