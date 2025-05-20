@@ -128,62 +128,101 @@ EndSection
 
 ## ✏️ 8. Create Minimal `.xinitrc`
 
-### Edit `~/.xinitrc`
-
-```bash
-nano ~/.xinitrc
-```
-
-Start with `xterm` to test:
+### Edit `~/.xinitrc` with the following content:
 
 ```sh
 #!/bin/sh
-xset s off
-xset -dpms
-xset s noblank
-exec xterm
+
+sudo -u pi bash <<EOF
+  source ~/.bashrc
+
+  export NVM_DIR="\$HOME/.nvm"
+  [ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"
+
+  cd ~/Desktop/Projects/MagicMirror
+
+  npm run start
+EOF
 ```
 
-Then:
+Make it executable:
 
 ```bash
 chmod +x ~/.xinitrc
-sudo xinit ~/.xinitrc -- vt1
 ```
-
-✅ You should see a terminal window on your SPI display.
 
 ---
 
-## 🌐 9. Replace Xterm with Chromium Kiosk
+## 🚀 9. Create Kiosk Launch Script
 
-Update `~/.xinitrc`:
+Place the following script at `/usr/local/bin/kiosk-launch.sh`:
 
 ```bash
-nano ~/.xinitrc
+sudo nano /usr/local/bin/kiosk-launch.sh
 ```
 
 Paste:
 
-```sh
-#!/bin/sh
-xset s off
-xset -dpms
-xset s noblank
-exec chromium-browser \
-  --noerrdialogs \
-  --disable-infobars \
-  --disable-session-crashed-bubble \
-  --disable-gpu \
-  --disable-software-rasterizer \
-  --no-sandbox \
-  --kiosk http://localhost:3000
+```bash
+#!/bin/bash
+export GTK_THEME=Adwaita:dark
+
+chmod +x ~/.xinitrc
+chmod 666 /dev/fb0 /dev/tty0
+# sudo xinit ~/.xinitrc -- vt1
+# Show splash (requires framebuffer access)
+echo "[kiosk] Launching splash screen"
+fbi -T 1 -d /dev/fb0 -noverbose -a \
+    /home/pi/splash.jpg || true
+sleep 1
+
+# Run Chromium via xinit with VT access
+echo "[kiosk] Starting Chromium via xinit"
+xinit /home/pi/.xinitrc -- vt1
 ```
 
-Launch:
+Make it executable:
 
 ```bash
-sudo xinit ~/.xinitrc -- vt1
+sudo chmod +x /usr/local/bin/kiosk-launch.sh
+```
+
+---
+
+## 🛡️ 10. Create systemd Service for Kiosk
+
+Create the service file at `/etc/systemd/system/chromium-kiosk.service`:
+
+```bash
+sudo nano /etc/systemd/system/chromium-kiosk.service
+```
+
+Paste:
+
+```ini
+[Unit]
+Description=Start Chromium Kiosk on 
+            ILI9341 with Splash
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+StandardOutput=journal
+StandardError=journal
+ExecStart=/usr/local/bin/kiosk-launch.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start the service:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable chromium-kiosk.service
+sudo systemctl start chromium-kiosk.service
 ```
 
 ---
